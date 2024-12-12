@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добро пожаловать в Web App!</h1>
+    <button onclick="sendData()">Отправить данные</button>
+
+    <script>
+        // Telegram Web App объект
+        const tg = window.Telegram.WebApp;
+
+        // Функция отправки данных в бота
+        function sendData() {
+            tg.sendData(JSON.stringify({ action: "user_clicked", timestamp: Date.now() }));
+        }
+
+        // Инициализация Web App
+        tg.ready();
+    </script>
+</body>
+</html>
