@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto del Gestor</title>
+    <style>
+        /* Стили для контейнера уведомления */
+        .notification-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification-container h2 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+
+        .notification-container p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Контейнер для ID */
+        .id-container {
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .id-container p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Кнопка копирования */
+        .copy-btn {
+            margin-left: 10px;
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #388e3c;
+        }
+
+        /* Кнопка Telegram */
+        .telegram-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            text-decoration: none;
+            background-color: #0088cc;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .telegram-btn:hover {
+            background-color: #005f9e;
+        }
+
+        /* Фон для всей страницы */
+        body {
+            background-color: #e8f5e9;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="notification-container">
+        <h2>¡Atención!</h2>
+        <p>
+            Para comenzar, por favor contacta con nuestro gestor en Telegram.
+            Haz clic en el botón de abajo para enviarle un mensaje.
+        </p>
+        <div class="id-container">
+            <p>Tu ID único: <span id="user-id"></span></p>
+            <button class="copy-btn" onclick="copyUserId()">Copiar ID</button>
+        </div>
+        <a id="telegram-link" href="#" target="_blank" class="telegram-btn">
+            Enviar mensaje en Telegram
+        </a>
+    </div>
+
+    <script>
+        // Получение ID из URL
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('id');
+            const telegramLink = document.getElementById('telegram-link');
+
+            if (!userId) {
+                alert("ID no encontrado en la URL.");
+                return;
+            }
+
+            // Устанавливаем обработчик клика
+            telegramLink.addEventListener('click', (e) => {
+                e.preventDefault(); // Предотвращаем стандартное действие
+                const link = `https://t.me/Monito_dinero?text=${encodeURIComponent(`Hola, mi ID es: ${userId}`)}`;
+                console.log(`Переход по ссылке: ${link}`);
+                window.open(link, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>

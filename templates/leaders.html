@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e1e;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+        .user-info {
+            background: #2b2b2b;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 255, 0, 0.2);
+            position: relative;
+        }
+        .user-info h1 {
+            margin: 0;
+            font-size: 24px;
+            color: gold;
+        }
+        .user-info p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .vip-icon {
+            margin-left: 10px;
+            font-size: 18px;
+            color: gold;
+        }
+        .top-ten {
+            background: #2b2b2b;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 255, 0, 0.2);
+        }
+        .top-ten h2 {
+            margin: 0 0 10px;
+            font-size: 20px;
+            color: gold;
+        }
+        .leader-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #444;
+        }
+        .leader-entry:last-child {
+            border-bottom: none;
+        }
+        .leader-entry span {
+            font-size: 16px;
+        }
+        .vip-icon-small {
+            margin-left: 5px;
+            font-size: 16px;
+            color: gold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Информация о клиенте -->
+        <div class="user-info">
+            <h1 id="user-name">Nombre del cliente</h1>
+            <p id="registration-date">Registrado: 2024-12-11</p>
+            <p>
+                <span id="user-rank" style="float: left;">Posición: 3</span>
+                <span id="user-balance" style="float: right;">Balance: $1200.00</span>
+            </p>
+        </div>
+
+        <!-- Топ-10 лидеров -->
+        <div class="top-ten">
+            <h2>Top 10</h2>
+            <div id="leaders-list">
+                <!-- Здесь будут динамически добавляться записи -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const userId = new URLSearchParams(window.location.search).get("id");
+            const token = new URLSearchParams(window.location.search).get("token");
+            const apiKey = new URLSearchParams(window.location.search).get("api_key");
+
+            try {
+                if (!userId || !token || !apiKey) {
+                    console.error("Missing parameters");
+                    return;
+                }
+
+                // Получение информации о клиенте
+                const userResponse = await fetch(`/get_user_info?id=${userId}&token=${token}&api_key=${apiKey}`);
+                if (!userResponse.ok) throw new Error("Failed to fetch user info");
+                const userData = await userResponse.json();
+
+                // Обновляем интерфейс клиента
+                const userNameElement = document.getElementById("user-name");
+                userNameElement.textContent = userData.name;
+                if (userData.vip) {
+                    const vipIcon = document.createElement("i");
+                    vipIcon.className = "fa fa-crown vip-icon";
+                    userNameElement.appendChild(vipIcon);
+                }
+                document.getElementById("registration-date").textContent = `Registrado: ${userData.registration_date}`;
+                document.getElementById("user-rank").textContent = `Posición: ${userData.rank}`;
+                document.getElementById("user-balance").textContent = `Balance: $${userData.balance.toFixed(2)}`;
+
+                // Получение топ-10 лидеров
+                const leadersResponse = await fetch(`/get_top_leaders?api_key=${apiKey}`);
+                if (!leadersResponse.ok) throw new Error("Failed to fetch top leaders");
+                const leadersData = await leadersResponse.json();
+
+                // Обновляем интерфейс топ-10
+                const leadersList = document.getElementById("leaders-list");
+                leadersData.forEach((leader, index) => {
+                    const leaderEntry = document.createElement("div");
+                    leaderEntry.className = "leader-entry";
+                    leaderEntry.innerHTML = `
+                        <span>${index + 1}. ${leader.name} ${leader.vip ? '<i class="fa fa-crown vip-icon-small"></i>' : ''}</span>
+                        <span>$${leader.balance.toFixed(2)}</span>
+                    `;
+                    leadersList.appendChild(leaderEntry);
+                });
+            } catch (error) {
+                console.error("[ERROR] Error loading leaders data:", error);
+            }
+        });
+    </script>
+</body>
+</html>

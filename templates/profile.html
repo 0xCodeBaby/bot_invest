@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Web App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+            <script src="https://code.iconify.design/3/3.0.0/iconify.min.js"></script>
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, sans-serif;
+                    background: #000000;
+                    color: white;
+                    overflow: hidden;
+                    position: relative;
+                }
+
+                /* Основной зелёный слой */
+                .full-background {
+                    position: fixed;
+                    top: 10%;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: #18241c;
+                    border-top-left-radius: 50px;
+                    border-top-right-radius: 50px;
+                    box-shadow: 0px -15px 40px rgba(255, 195, 0, 0.8);
+                    z-index: 1;
+                    outline: 4px solid rgba(255, 223, 0, 0.6);
+                }
+
+                /* Обезьянка */
+                .avatar-container {
+                    position: fixed;
+                    bottom: 150px;
+                    left: 50%;
+                    transform: translate(-50%, 0);
+                    z-index: 3;
+                }
+
+                .avatar-container img {
+                    width: 270px;
+                    height: 270px;
+                    border-radius: 50%;
+                    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+                }
+
+                /* Фон для кнопок */
+                .button-background {
+                    position: fixed;
+                    bottom: 30px;
+                    left: 0;
+                    width: 100%;
+                    height: 90px;
+                    background: #294a31;
+                    border-top-left-radius: 40px;
+                    border-top-right-radius: 40px;
+                    border-bottom-left-radius: 40px;
+                    border-bottom-right-radius: 40px;
+                    box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    z-index: 10;
+                }
+
+                /* Кнопка */
+                .button {
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: rgba(255, 255, 255, 0.1);
+                    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+
+                /* Иконки */
+                .button i {
+                    font-size: 24px;
+                    color: white;
+                    transition: color 0.3s ease;
+                }
+
+                /* Активная кнопка */
+                .button.active {
+                    background-color: #4CAF50; /* Зеленый фон для активной кнопки */
+                    color: white; /* Белый цвет текста */
+                    border-radius: 50%; /* Закругление кнопки */
+                    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Тень для выделения */
+                }
+
+                /* Текст рамки с реквизитами */
+                /* Контейнер */
+                .client-account-container {
+                    position: fixed !important;
+                    top: 25% !important;
+                    left: 50% !important;
+                    transform: translateX(-50%) !important;
+                    text-align: center !important;
+                    z-index: 1000 !important;
+                    width: 90% !important;
+                    max-width: 400px !important;
+                }
+
+                .account-title {
+                    font-size: 22px !important;
+                    font-weight: bold !important;
+                    color: #ffffff !important;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+                    margin-bottom: 15px !important;
+                    text-align: center !important;
+                    background: transparent !important;
+                    z-index: 1010 !important;
+                }
+
+                .account-box {
+                    background: rgba(39, 174, 96, 0.1) !important;
+                    border: 2px solid #27ae60 !important;
+                    border-radius: 15px !important;
+                    padding: 20px !important;
+                    color: #ffffff !important;
+                    font-family: 'Arial', sans-serif !important;
+                    font-size: 18px !important;
+                    line-height: 1.6 !important;
+                    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2) !important;
+                    white-space: pre-wrap !important;
+                    text-align: center !important;
+                    word-wrap: break-word !important;
+                    margin-top: 10px !important;
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                }
+
+                .account-box::before {
+                    content: "🔐"; /* Добавим иконку для красоты */
+                    font-size: 28px;
+                    color: #ffd700;
+                    display: block;
+                    text-align: center;
+                    margin-bottom: 10px;
+                }
+                
+                .full-page-overlay {
+                    position: fixed; /* Зафиксирован относительно окна */
+                    top: 10%; /* Начинается чуть выше центра */
+                    left: 0;
+                    width: 100%; /* На всю ширину */
+                    height: 100%; /* На оставшуюся высоту */
+                    background: #18241c; /* Тёмно-зелёный */
+                    border-top-left-radius: 50px; /* Закругление сверху */
+                    border-top-right-radius: 50px; /* Закругление сверху */
+                    box-shadow: 0px -15px 40px rgba(255, 195, 0, 0.8); /* Свечение сверху */
+                    z-index: 1; /* Под другими элементами */
+                    outline: 4px solid rgba(255, 223, 0, 0.6); /* Гладкая обводка */
+                }
+                
+                .dark-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.004); /* Глубокий черный фон с большей прозрачностью */
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                    text-align: center;
+                }
+                
+                /* Сообщение */
+                .no-account-message {
+                    background: rgba(0, 0, 0, 0.4);
+                    border: 2px solid #ffdd00;
+                    border-radius: 10px;
+                    margin-top: 80px;
+                    padding: 20px;
+                    width: 90%;
+                    max-width: 400px;
+                    text-align: center;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                }
+
+                .message-title {
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    color: #f5f2f2;
+                }
+
+                .message-text {
+                    font-size: 14px; /* Уменьшенный размер текста */
+                    margin-bottom: 10px;
+                    color: #f5f2f2;
+                }
+
+                /* Кнопка */
+                .manager-button {
+                    background-color: #0f9d58;
+                    border: none;
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    transition: background-color 0.3s;
+                }
+
+                .manager-button:hover {
+                    background-color: #0c7c46;
+                }
+
+                /* Окно с деталями счета */
+                .account-details {
+                    display: none;
+                    margin: 0 auto;
+                    padding: 20px;
+                    text-align: center;
+                }
+
+                .details-title {
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    color: #f5f2f2;
+                }
+
+                .account-box {
+                    background: rgba(255, 255, 255, 0.9);
+                    border: 2px solid #0f9d58;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin-bottom: 10px;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                    color: #333;
+                    font-size: 14px; /* Уменьшенный размер текста */
+                }
+            </style>
+</head>
+<body>
+    <!-- Полный затемненный фон -->
+    <div class="full-page-overlay"></div>
+
+        <!-- Центрированный аватар -->
+        <div class="avatar-container">
+            <img src="{{ url_for('static', filename='images/main.jpg') }}" alt="Avatar">
+        </div>
+        
+        <!-- Контейнер для рамки с текстом -->
+        <div class="client-account-container">
+            <div id="dark-overlay" class="dark-overlay">
+                <div class="no-account-message">
+                    <p class="account-header">Detalles de la cuenta</p>
+                    <p id="account-details" class="account-details"></p>
+                    <button id="contact-manager-btn" class="manager-button">Contactar al gerente</button>
+                    <button id="edit-account-btn" class="manager-button" style="display: none;">Editar datos</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопки -->
+        <div class="button-background">
+            <div class="button" data-tab="earnings"><i class="fas fa-coins"></i></div>
+            <div class="button" data-tab="income"><i class="fas fa-chart-line"></i></div>
+            <div class="button" data-tab="withdraw"><i class="fas fa-credit-card"></i></div>
+            <div class="button" data-tab="leaders"><i class="fas fa-trophy"></i></div>
+            <div class="button" data-tab="profile"><i class="fas fa-user-circle"></i></div>
+        </div>
+
+        <script src="{{ url_for('static', filename='js/buttons.js') }}" defer></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", async () => {
+                const userId = new URLSearchParams(window.location.search).get("id");
+                const token = new URLSearchParams(window.location.search).get("token");
+                const apiKey = new URLSearchParams(window.location.search).get("api_key");
+
+                const accountDetailsElement = document.getElementById("account-details");
+                const darkOverlay = document.getElementById("dark-overlay");
+                const contactManagerBtn = document.getElementById("contact-manager-btn");
+                const editAccountBtn = document.getElementById("edit-account-btn");
+
+                // Ссылка на менеджера
+                const managerLink = "https://t.me/Monito_dinero";
+
+                async function fetchAccountDetails() {
+                    try {
+                        if (!userId || !token || !apiKey) {
+                            throw new Error("Missing required parameters");
+                        }
+
+                        const response = await fetch(`/get_account?id=${userId}&token=${token}&api_key=${apiKey}`);
+                        if (!response.ok) throw new Error("Error al obtener los datos de la cuenta");
+
+                        const data = await response.json();
+                        console.log("[DEBUG] Account data:", data);
+
+                        if (data && data.cuenta) {
+                            // Если счет существует
+                            accountDetailsElement.textContent = data.cuenta;
+                            accountDetailsElement.style.display = "block";
+                            editAccountBtn.style.display = "inline-block";
+                            contactManagerBtn.style.display = "none";
+                            darkOverlay.style.background = "rgba(0, 0, 0, 0.5)"; // Уменьшаем затемнение
+                        } else {
+                            // Если счета нет
+                            darkOverlay.style.display = "flex";
+                            accountDetailsElement.style.display = "none";
+                            editAccountBtn.style.display = "none";
+                            contactManagerBtn.style.display = "inline-block";
+                        }
+                    } catch (error) {
+                        console.error("[ERROR] Error al cargar los datos de la cuenta:", error);
+                        accountDetailsElement.textContent = "Error al cargar los datos de la cuenta. Inténtalo de nuevo.";
+                        darkOverlay.style.display = "flex";
+                    }
+                }
+
+                // Обработчик клика для перехода к менеджеру
+                contactManagerBtn.addEventListener("click", () => {
+                    window.open(managerLink, "_blank");
+                });
+
+                // Обработчик клика для изменения счета
+                editAccountBtn.addEventListener("click", () => {
+                    window.open(managerLink, "_blank");
+                });
+
+                // Запуск получения данных счета
+                fetchAccountDetails();
+            });
+        </script>
+</body>
+</html>

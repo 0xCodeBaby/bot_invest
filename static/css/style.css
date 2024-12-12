@@ -1,0 +1,257 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #000000; /* Основной фон - чёрный */
+    color: white;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Основной зелёный слой */
+.full-background {
+    position: fixed; /* Зафиксирован относительно окна */
+    top: 10%; /* Начинается чуть выше центра */
+    left: 0;
+    width: 100%; /* На всю ширину */
+    height: 100%; /* На оставшуюся высоту */
+    background: #18241c; /* Тёмно-зелёный */
+    border-top-left-radius: 50px; /* Закругление сверху */
+    border-top-right-radius: 50px; /* Закругление сверху */
+    box-shadow: 0px -15px 40px rgba(255, 195, 0, 0.8); /* Свечение сверху */
+    z-index: 1; /* Под другими элементами */
+    outline: 4px solid rgba(255, 223, 0, 0.6); /* Гладкая обводка */
+}
+
+/* Логин и иконка */
+.user-info {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 0;
+}
+
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #202120; /* Золотая рамка */
+}
+
+.user-info .username {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Контейнер баланса */
+.balance-container {
+    position: fixed; /* Фиксированная позиция */
+    top: 40%; /* Центруем ближе к центру */
+    left: 50%; /* Центруем по горизонтали */
+    transform: translate(-50%, -50%); /* Горизонтальная и вертикальная центровка */
+    display: flex;
+    flex-direction: row; /* Рядом изображение и текст */
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Промежуток между изображением и текстом */
+    z-index: 3; /* Поверх остальных элементов */
+}
+
+.coin-image {
+    width: 70px;
+    height: 70px;
+    transition: transform 0.3s ease; /* Плавная анимация */
+}
+
+.coin-image.animate {
+    transform: scale(1.2); /* Увеличение на 20% */
+}
+
+/* Текст баланса */
+.balance-text {
+    font-size: 64px; /* Размер текста */
+    font-weight: bold;
+    color: #FFD700; /* Золотой цвет текста */
+}
+
+/* Обезьянка */
+.avatar-container {
+    position: fixed;
+    bottom: 150px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 3;
+}
+
+.avatar-container img {
+    width: 235px;
+    height: 235px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Фон для кнопок */
+.button-background {
+    position: fixed;
+    bottom: 30px; /* Располагаем выше от нижнего края */
+    left: 0;
+    width: 100%;
+    height: 90px; /* Высота фона кнопок */
+    background: #294a31; /* Фон кнопок */
+    border-top-left-radius: 40px; /* Закругляем верхний левый угол */
+    border-top-right-radius: 40px; /* Закругляем верхний правый угол */
+    border-bottom-left-radius: 40px; /* Закругляем нижний левый угол */
+    border-bottom-right-radius: 40px; /* Закругляем нижний правый угол */
+    box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.5); /* Тень вокруг */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+}
+
+/* Кнопка */
+.button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Иконки */
+.button i {
+    font-size: 24px; /* Размер иконок */
+    color: white;
+    transition: color 0.3s ease;
+}
+
+/* Активная кнопка */
+.button.active {
+    background: rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+/*.button.active i {
+    color: gold; /* Цвет активной иконки
+} */
+
+/* Стиль для активной кнопки */
+.button.active {
+    background-color: #4CAF50; /* Зеленый фон для активной кнопки */
+    color: white; /* Белый цвет текста */
+    border-radius: 50%; /* Закругление кнопки */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Тень для выделения */
+}
+
+/* Hover-эффект */
+.button:hover {
+    background: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.button:hover i {
+    color: #ffd700; /* Цвет иконки при наведении */
+}
+
+/* Таймер */
+.timer-container {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #FFD700;
+    text-align: center;
+    z-index: 10;
+    animation: fade-in-out 1s ease-in-out infinite; /* Плавность обновления */
+}
+
+/* Анимация плавного появления/исчезновения */
+@keyframes fade-in-out {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Контейнер для клеток */
+.info-container {
+    display: flex;
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center; /* Центрируем по вертикали */
+    gap: 20px; /* Расстояние между клетками */
+    margin-top: 50px; /* Отступ сверху */
+}
+
+/* Контейнер для вкладок */
+.info-container {
+    position: absolute; /* Абсолютное позиционирование */
+    top: 60px; /* Расстояние от верха */
+    left: 50%; /* Центровка */
+    transform: translateX(-50%); /* Выравнивание контейнера */
+    display: flex;
+    gap: 5px; /* Расстояние между вкладками */
+    z-index: 2; /* Слой поверх зеленого фона */
+}
+
+/* Общие стили для вкладок */
+.info-box {
+    width: 180px; /* Увеличенные размеры */
+    height: 110px;
+    background: rgba(0, 0, 0, 0.6); /* Темный прозрачный фон */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px; /* Чуть больше текста */
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень */
+}
+
+/* Левая вкладка */
+.left-box {
+    border-top-left-radius: 40px; /* Закругление слева */
+    border-bottom-left-radius: 40px;
+    border-top-right-radius: 0; /* Прямой угол справа */
+    border-bottom-right-radius: 0;
+}
+
+/* Правая вкладка */
+.right-box {
+    border-top-right-radius: 40px; /* Закругление справа */
+    border-bottom-right-radius: 40px;
+    border-top-left-radius: 0; /* Прямой угол слева */
+    border-bottom-left-radius: 0;
+}
+
+/* Стиль текста в клетках */
+.info-box div {
+    text-align: center;
+}
+
+/* Заголовок текста */
+.info-box p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #FFD700; /* Золотистый цвет */
+}
+
+/* Основной текст */
+.info-box span, .info-box #income-amount {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
